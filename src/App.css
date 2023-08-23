@@ -1,0 +1,12 @@
+.flex-grid {
+  max-width:var(--narrow-width);
+  margin: 2em auto;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content: center;
+  align-items: normal;
+  border:1px solid red;
+}
+.col {
+  flex: 1;
+}
