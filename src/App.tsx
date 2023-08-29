@@ -10,9 +10,6 @@ function App() {
     <>
       <div className="flex-grid">
         <Persona></Persona>
-        <Persona></Persona>
-        <Persona></Persona>
-        <Persona></Persona>
       </div>
     </>
   );

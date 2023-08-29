@@ -1,4 +1,4 @@
-.flex-grid {
+.container {
   max-width:var(--narrow-width);
   margin: 2em auto;
   display:flex;
@@ -9,4 +9,9 @@
 }
 .col {
   flex: 1;
+}
+
+.headshot { 
+  width: 18em;
+
 }
