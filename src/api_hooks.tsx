@@ -9,7 +9,7 @@ export function useGetPosts() {
     try {
       setFetchState(FetchState.LOADING);
 
-      const res = await axios.get("http://127.0.0.1:105/sample/");
+      const res = await axios.get("http://127.0.0.1:8000/sample/");
       const resData = res.data as Array<PostData>;
 
       setPosts(resData);

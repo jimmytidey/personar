@@ -1,80 +1,35 @@
 from flask import Flask,json, send_file,request,make_response
+from flask_cors import CORS, cross_origin
 import pandas as pd
 import random
 import os
-from data.age_and_gender_dist_by_MSOA.sample_age_and_gender_dist_by_MSOA import sample_age_and_gender_dist_by_MSOA
-
-
-def get_MSOA_ethnicity(MSOA_id, no_samples=1):
-  MSOA_df = pd.read_csv('data/MSOA_ethnicity/MSOA_ethnicity.csv')
-  distribution = MSOA_df.loc[MSOA_df['Middle layer Super Output Areas Code'] == MSOA_id]
-  distribution_dict = distribution.set_index('Ethnic group (20 categories)')['Observation'].to_dict()
-  sample = random.choices(list(distribution_dict.keys()), weights=distribution_dict.values(), k = no_samples)
-  if (no_samples == 1): 
-    sample = sample[0]
-
-  return sample
+from data.core_demography_by_ltla.core_demography_by_ltla import sample_core_demography_by_ltla
+from data.employment_by_demography.employment_by_demography import sample_employment_by_demography
+from data.headshots.get_headshot_urls import get_headshot_urls
  
-
-def random_image(age, gender, ethnicity):
-    """
-    Return a random image from the ones in the static/ directory
-    """
-
-    if (ethnicity=='white'):
-      ethnicity_prefix_string = "white"
-    elif (ethnicity=='black'):
-      ethnicity_prefix_string = "black"  
-    elif (ethnicity=='asian'):
-      ethnicity_prefix_string = "asian"
-    elif (ethnicity=='indian'):
-      ethnicity_prefix_string = "indian"      
-    else:
-      ethnicity_prefix_string = "white"        
-
-    prefix_string = gender+ "_" + age + "_"+ ethnicity_prefix_string
-    print('prefix_string')
-    print(prefix_string)
-
-    img_dir = "./tpdne"
-    img_list = os.listdir(img_dir)
-    img_path = [filename for filename in os.listdir(img_dir) if filename.startswith(prefix_string)]
-    age_search_radius = 1
-    while len(img_path) == 0:
-      age_search = str(int(age) + age_search_radius)
-      prefix_string = gender+ "_" + age_search + "_"+ ethnicity_prefix_string
-      older_img_path = [filename for filename in os.listdir(img_dir) if filename.startswith(prefix_string)]
-
-      age_search = str(int(age) - age_search_radius)
-      prefix_string = gender+ "_" + age_search + "_"+ ethnicity_prefix_string
-      younger_img_path = [filename for filename in os.listdir(img_dir) if filename.startswith(prefix_string)]      
-      
-      img_path =older_img_path+ younger_img_path
-
-      age_search_radius +=1
-      
-    img_sample = os.path.join(img_dir, random.choices(img_path)[0])
-    print("---") 
-    print(img_sample)
-    return img_sample
 
 
 app = Flask(__name__)
+CORS(app,resources={r"/sample/": {"origins": "*"}})
 
 @app.route('/sample/', methods=['GET'])
+
 def sample():
-    sample_df = sample_age_and_gender_dist_by_MSOA(10)
-    sample_df['ethniticty'] = sample_df['MSOA Code'].apply(get_MSOA_ethnicity)
-    sample_df.columns = sample_df.columns.str.replace(' ', '')
-    sample_df.columns = sample_df.columns.str.replace('(2021boundaries)', '')
-   
+    sample_df = sample_core_demography_by_ltla(10)
+    print(sample_df)
+    def add_employment_data(row):
+        return sample_employment_by_demography(row['ltla_code'], row['age'], row['ethnicity_code'])
+
+    sample_df['employment'] = sample_df.apply(add_employment_data, axis=1)
+    sample_df = get_headshot_urls(sample_df)
+
     json_data = sample_df.to_json(orient='records')
+    print(json_data)
     response = app.response_class(
         response=json_data,
         status=200,
         mimetype='application/json'
     )
-
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
@@ -89,8 +44,8 @@ def image():
 
   return 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=105)
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', port=8000, debug=True)
 
 
 
