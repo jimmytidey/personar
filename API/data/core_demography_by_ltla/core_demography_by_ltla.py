@@ -59,5 +59,19 @@ def sample_core_demography_by_ltla(sample_size):
 
     return sample_df
 
+def list_all_ltlas():
+
+    path = os.path.abspath(os.path.dirname(__file__))
+    file_path = os.path.join(path, 'RM032-2021-1-filtered-2023-09-02T13_43_40Z.csv')
+    df = pd.read_csv(file_path)
+
+    list = df.drop_duplicates('Lower tier local authorities Code')
+
+    list = list[['Lower tier local authorities Code',
+                 'Lower tier local authorities']]
+
+    list.sort_values('Lower tier local authorities', inplace=True)
+
+    return list
 
 

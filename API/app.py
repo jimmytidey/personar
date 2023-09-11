@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 import pandas as pd
 import random
 import os
-from data.core_demography_by_ltla.core_demography_by_ltla import sample_core_demography_by_ltla
+from data.core_demography_by_ltla.core_demography_by_ltla import sample_core_demography_by_ltla, list_all_ltlas
 from data.employment_by_demography.employment_by_demography import sample_employment_by_demography
 from data.headshots.get_headshot_urls import get_headshot_urls
  
@@ -33,16 +33,19 @@ def sample():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@app.route('/image/headshot.jpg', methods=['GET'])
-def image():
-  args = request.args
-  print(args.get('age'))
-  image = random_image(args.get('age'), args.get('gender'), args.get('ethnicity'))
-  response = make_response(send_file(image, mimetype='image/png'))
-  response.headers.add("Access-Control-Allow-Origin", "*")
-  return response
-
-  return 
+@app.route('/list_ltlas/', methods=['GET'])
+def list_ltlas():
+    result = list_all_ltlas()
+ 
+    json_data = result.to_json(orient='records')
+    print(json_data)
+    response = app.response_class(
+        response=json_data,
+        status=200,
+        mimetype='application/json'
+    )
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=8000, debug=True)
