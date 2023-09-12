@@ -5,7 +5,7 @@ export enum FetchState {
   ERROR = "ERROR",
 }
 
-export type PostData = {
+export type PersonasData = {
   ltla_code: string;
   ltla_name: string;
   sex: string;
@@ -15,4 +15,9 @@ export type PostData = {
   employment: number;
   observation: number;
   headshot_file: string;
+};
+
+export type LtlaListData = {
+  ltla_code: string;
+  ltla_name: string;
 };

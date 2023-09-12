@@ -1,5 +1,5 @@
-import { PostData } from "../types";
 import styled from "styled-components";
+import { PersonasData } from "../types";
 
 const PersonaCardDiv = styled.div`
   width: 20em;
@@ -14,12 +14,13 @@ const PersonaCardImg = styled.img`
 
 interface Props {
   key: number;
-  postProps: PostData;
+  postProps: PersonasData;
 }
 
 const PersonarCard = ({ postProps }: Props) => {
   const headshot_url =
-    "http://localhost:5173/api/data/headshots/images/" +
+    import.meta.env.VITE_API_PATH +
+    "/headshots/images/" +
     postProps["headshot_file"];
   return (
     <PersonaCardDiv>
