@@ -20,6 +20,7 @@ def DfToResponse(df):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
+
 @app.route('/data/sample/', methods=['GET'])
 def sample():
     region = request.args.get('region')
