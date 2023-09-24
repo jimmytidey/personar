@@ -1,10 +1,17 @@
 import PersonarCards from "./PersonarCards";
+import LocationPicker from "./LocationPicker";
+import { useState } from "react";
 
 const Personar = () => {
+  const [fetchRegion, setRegion] = useState("E07000223");
   return (
     <>
-      <div>Persona</div>
-      <PersonarCards></PersonarCards>
+      <LocationPicker
+        fetchRegion={fetchRegion}
+        setRegion={setRegion}
+      ></LocationPicker>
+
+      <PersonarCards fetchRegion={fetchRegion}></PersonarCards>
     </>
   );
 };

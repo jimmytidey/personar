@@ -1,6 +1,6 @@
-import { useGetLtlaListData } from "../api_hooks";
-import { FetchState } from "../types";
-import { useEffect } from "react";
+import { FetchState, LtlaListData } from "../types";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 interface Props {
   fetchRegion: string;
@@ -8,11 +8,27 @@ interface Props {
 }
 
 const LocationPicker = ({ fetchRegion, setRegion }: Props) => {
+  const [fetchState, setFetchState] = useState(FetchState.DEFAULT);
+  const [LtlaList, setLtlaList] = useState<Array<LtlaListData>>([]);
+  const getLtlaList = async () => {
+    try {
+      setFetchState(FetchState.LOADING);
+
+      const res = await axios.get(
+        import.meta.env.VITE_API_PATH + "/data/list_ltlas/"
+      );
+      const resData = res.data as Array<LtlaListData>;
+
+      setLtlaList(resData);
+      setFetchState(FetchState.SUCCESS);
+    } catch (err) {
+      setFetchState(FetchState.ERROR);
+    }
+  };
+
   useEffect(() => {
     getLtlaList();
   }, []);
-
-  const [LtlaList, fetchState, getLtlaList] = useGetLtlaListData();
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setRegion(event.target.value);
