@@ -8,13 +8,19 @@ from helpers import get_path
 def add_headshots(sample_df):
 
     def add_ethnicty_image_categories(ethnicity_string):
-        if ('black'.casefold() in ethnicity_string.casefold()):
+        if ('black' in ethnicity_string.casefold()):
             ethnicity_image_cat = "black"
-        elif ('asian'.casefold() in ethnicity_string.casefold()):
+        elif ('asian' in ethnicity_string.casefold()):
             ethnicity_image_cat = "asian"
-        elif ('indian'.casefold() in ethnicity_string.casefold()):
+        elif ('chinese' in ethnicity_string.casefold()):
+            ethnicity_image_cat = "asian"            
+        elif ('indian' in ethnicity_string.casefold()):
             ethnicity_image_cat = "indian"
-        elif ('white'.casefold() in ethnicity_string.casefold()):
+        elif ('pakistani' in ethnicity_string.casefold()):
+            ethnicity_image_cat = "indian"
+        elif ('bangladeshi' in ethnicity_string.casefold()):
+            ethnicity_image_cat = "indian"                        
+        elif ('white' in ethnicity_string.casefold()):
             ethnicity_image_cat = "white"
         else:
             ethnicity_image_cat = "white"

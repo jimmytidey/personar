@@ -11,6 +11,7 @@ export type PersonasData = {
   sex: string;
   ethnicity: string;
   age_category: number;
+  notes: number;
   age: number;
   employment: number;
   observation: number;

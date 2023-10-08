@@ -23,8 +23,9 @@ const PersonarCard = ({ postProps }: Props) => {
       <div className="card-body">
         <p>Location: {postProps["ltla_name"]}</p>
         <p>Gender: {postProps["sex"]}</p>
-        <p>Age: {postProps["age"]}</p>
+        <p>Age: {postProps["age_category"]}</p>
         <p>Ethnicity: {postProps["ethnicity"]}</p>
+        <p>Percentage of this demographic: {postProps["notes"]}</p>
         <p>Employment: {postProps["employment"]}</p>
       </div>
     </PersonaCardDiv>

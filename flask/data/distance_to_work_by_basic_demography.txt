@@ -1,0 +1,27 @@
+ltla's covered - 169 out of 331
+gender - two categories
+ethnicity - 20 cateogies
+
+
+Ages: 
+Aged 15 years and under
+Aged 16 to 24 years
+Aged 25 to 34 years
+Aged 35 to 49 years
+Aged 50 to 64 years
+Aged 65 years and over
+
+
+Distance to work: 
+Less than 2km
+2km to less than 5km
+5km to less than 10km
+10km to less than 20km
+20km to less than 30km
+30km to less than 40km
+40km to less than 60km
+60km and over
+Works mainly from home
+Not in employment or works mainly offshore, in no fixed place or outside the UK
+
+{"@context":"http://www.w3.org/ns/csvw","url":"https://download.ons.gov.uk/downloads/filter-outputs/407692ef-16c1-48c4-bbac-4be1950e4100.csvw","dct:title":"Lower tier local authorities, Age (6 categories), Ethnic group (20 categories), Sex (2 categories) and Distance travelled to work (10 categories)","dct:issued":"10-02-2023 20:02:30","dct:publisher":{"@id":""},"tableSchema":{"columns":[{"datatype":"string","label":"Person","titles":"cantabular_table"},{"description":"Lower tier local authorities provide a range of local services. There are 309 lower tier local authorities in England made up of 181 non-metropolitan districts, 59 unitary authorities, 36 metropolitan districts and 33 London boroughs (including City of London). In Wales there are 22 local authorities made up of 22 unitary authorities.","label":"Lower tier local authorities","optionCount":331,"required":true,"titles":"ltla","valueURL":"https://api.beta.ons.gov.uk/v1/code-lists/ltla/codes/{Lower tier local authorities}"},{"description":"A person’s age on Census Day, 21 March 2021 in England and Wales. Infants aged under 1 year are classified as 0 years of age.","label":"Age (6 categories)","optionCount":6,"required":true,"titles":"resident_age_6a","valueURL":"https://api.beta.ons.gov.uk/v1/code-lists/resident_age_6a/codes/{Age (6 categories)}"},{"description":"The ethnic group that the person completing the census feels they belong to. This could be based on their culture, family background, identity or physical appearance.\n\nRespondents could choose one out of 19 tick-box response categories, including write-in response options.","label":"Ethnic group (20 categories)","optionCount":20,"required":true,"titles":"ethnic_group_tb_20b","valueURL":"https://api.beta.ons.gov.uk/v1/code-lists/ethnic_group_tb_20b/codes/{Ethnic group (20 categories)}"},{"description":"This is the sex recorded by the person completing the census. The options were “Female” and “Male”.","label":"Sex (2 categories)","optionCount":2,"required":true,"titles":"sex","valueURL":"https://api.beta.ons.gov.uk/v1/code-lists/sex/codes/{Sex (2 categories)}"},{"description":"The distance, in kilometres, between a person's residential postcode and their workplace postcode measured in a straight line. A distance travelled of 0.1km indicates that the workplace postcode is the same as the residential postcode. Distances over 1200km are treated as invalid, and an imputed or estimated value is added.\n\n“Work mainly at or from home” is made up of those that ticked either the \"Mainly work at or from home\" box for the address of workplace question, or the “Work mainly at or from home” box for the method of travel to work question.\n\nDistance is calculated as the straight line distance between the enumeration postcode and the workplace postcode.\n\nCombine this variable with “Economic activity status” to identify those in employment at the time of the census.","label":"Distance travelled to work (10 categories)","optionCount":10,"required":true,"titles":"workplace_travel_10a","valueURL":"https://api.beta.ons.gov.uk/v1/code-lists/workplace_travel_10a/codes/{Distance travelled to work (10 categories)}"}]},"dcat:conformsTo":"Person"}
