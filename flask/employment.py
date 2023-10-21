@@ -1,48 +1,23 @@
 import pandas as pd
-from helpers import get_path
+from helpers import csv_to_clean_df
 
 
 class Employment: 
 
     def __init__(self):
 
-        file_name_young = 'data/employment_status_by_basic_demography_young.csv'
-        file_name_old = 'data/employment_status_by_basic_demography_old.csv'
-
-        file_path_young = get_path(file_name_young)
-        file_path_old = get_path(file_name_old)
-
-        young_df = pd.read_csv(file_path_young)
-        old_df = pd.read_csv(file_path_old)
-
-        rename_dict = {'Lower tier local authorities Code': 'ltla_code',
-                    'Lower tier local authorities': 'ltla_name',
-                    'Age (B) (6 categories)': 'age_category',
-                    'Age (C) (5 categories)': 'age_category',
-                    'Ethnic group (20 categories)': 'ethnicity',
-                    'Ethnic group (20 categories) Code': 'ethnicity_code',
-                    'Sex (2 categories)': 'gender',
-                    'Observation': 'observation',
-                    'Ethnic group (20 categories) Code': 'ethnicity_code',
-                    'Economic activity status (7 categories)': 'employment_status',
-                    'Economic activity status (7 categories) Code': 'employment_status_code'
-                    }
-        
-        young_df.rename(columns=rename_dict, inplace=True)
-        self.young_df = young_df.drop('Age (B) (6 categories) Code', axis=1)
-
-        old_df.rename(columns=rename_dict, inplace=True)
-        self.old_df = old_df.drop('Age (C) (5 categories) Code', axis=1)
-
+        self.young_df = csv_to_clean_df(
+            'data/employment_status_by_basic_demography_young.csv')
+        self.old_df = csv_to_clean_df(
+            'data/employment_status_by_basic_demography_old.csv')
 
     def add_employment(self, sample_df):  
-        sample_df['employment'] = sample_df.apply(self.add_employment_data_to_row, axis=1)
+        sample_df['employment'] = sample_df.apply(self.sample_employment_by_demography, axis=1)
+        sample_df['employment_status_simplified_code'] = sample_df['employment'].apply(employment_status_simplified_code)
+        
         return sample_df
 
-    def add_employment_data_to_row(self, row):
-        return self.sample_employment_by_demography(row['ltla_code'], row['age'], row['ethnicity_code']) 
-
-    def sample_employment_by_demography(self, ltla_code, age, ethnicity_code):
+    def sample_employment_by_demography(self, row):
 
         def age_to_age_category_young(age):
             if (age <= 4):
@@ -74,16 +49,16 @@ class Employment:
             else:
                 return -1
 
-        if (age < 30):
-            age_category = age_to_age_category_young(age)
+        if (row['age'] < 30):
+            age_category = age_to_age_category_young(row['age'])
         else:
-            age_category = age_to_age_category_old(age)
+            age_category = age_to_age_category_old(row['age'])
 
         query = "age_category== '" + age_category + \
-            "'&ethnicity_code== " + str(ethnicity_code) + \
-            "&ltla_code== '" + ltla_code + "'"
+            "'&ethnicity_code== " + str(row['ethnicity_code']) + \
+            "&ltla_code== '" + row['ltla_code'] + "'"
 
-        if (age < 30):
+        if (row['age'] < 30):
             distribution_df = self.young_df.query(query)
         else:
             distribution_df = self.old_df.query(query)
@@ -93,9 +68,38 @@ class Employment:
         else: 
             sample_df = distribution_df.sample(1, weights='observation')
             employment_status = sample_df['employment_status'].values[0]
-
-        print('***')
-        print(employment_status)
+            employment_status_code = sample_df['employment_status_code'].values[0]
+        employment_status = employment_status_translation(employment_status)
 
         return employment_status
 
+
+def employment_status_translation(status):
+    dict = { 
+        'Economically active (excluding full-time students): In employment': 'Employed',
+        'Economically active: Unemployed (including full-time students)': 'Student looking for a job',
+        'Economically active (excluding full-time students): Unemployed: Seeking work or waiting to start a job already obtained: Available to start working within 2 weeks': 'Seeking work',
+        'Economically active and a full-time student: In employment': 'Student with a job',
+        'Economically inactive (excluding full-time students)': 'Not seeking work',
+        'Economically inactive and a full-time student': 'Student',
+        'Does not apply': 'Does not apply',
+        'no data': 'no data'
+    } 
+
+    return dict[status]
+
+def employment_status_simplified_code(status):
+    dict = { 
+        'Employed': 1,
+        'Student looking for a job': 1,
+        'Seeking work': 2,
+        'Student with a job': 1,
+        'Not seeking work': 3,
+        'Student': 1,
+        'Does not apply': -8,
+        'no data': -8
+    } 
+
+    return dict[status]
+
+    

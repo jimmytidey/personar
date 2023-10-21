@@ -35,7 +35,7 @@ def add_headshots(sample_df):
     output_list = [re.split('_|\.', i) for i in img_list]
 
     images_df = pd.DataFrame(output_list)
-    images_df.rename(columns={0: 'sex', 1: 'image_age',
+    images_df.rename(columns={0: 'gender', 1: 'image_age',
                     2: 'image_ethnicity', 3: 'number', 4: 'file_type'}, inplace=True)
 
     images_df['image_age'] = pd.to_numeric(
@@ -47,10 +47,10 @@ def add_headshots(sample_df):
     sample_df.sort_values('age', inplace=True)
 
     sample_df = pd.merge_asof(sample_df, images_df,
-                            left_on='age', right_on='image_age', left_by=['sex', 'ethnicity_image_cat'],
-                            right_by=['sex', 'image_ethnicity'], allow_exact_matches=True, direction="nearest")
+                            left_on='age', right_on='image_age', left_by=['gender', 'ethnicity_image_cat'],
+                            right_by=['gender', 'image_ethnicity'], allow_exact_matches=True, direction="nearest")
 
-    sample_df['headshot_file'] = sample_df['sex'].astype(str) + "_" + \
+    sample_df['headshot_file'] = sample_df['gender'].astype(str) + "_" + \
         sample_df['image_age'].astype(str) + "_" + \
         sample_df['ethnicity_image_cat'].astype(str) + "_" + \
         sample_df['number'].astype(str) + "." + \

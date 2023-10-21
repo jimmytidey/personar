@@ -1,6 +1,6 @@
 import pandas as pd
 import random
-from helpers import get_path
+from helpers import csv_to_clean_df, ethnicity_code_simplified
 from IPython.display import display, HTML
 display(HTML("<style>.container { width:100% !important; }</style>"))
 
@@ -8,20 +8,8 @@ display(HTML("<style>.container { width:100% !important; }</style>"))
 class BasicDemography:
 
     def __init__(self):
-        csv_path = get_path('data/basic_demography_ltla_level.csv')
-        self.csv_df = pd.read_csv(csv_path)
-        rename_dict = {'Lower tier local authorities Code': 'ltla_code',
-                       'Lower tier local authorities': 'ltla_name',
-                       'Age (9 categories)': 'age_category',
-                       'Ethnic group (20 categories)': 'ethnicity',
-                       'Sex (2 categories)': 'sex',
-                       'Observation': 'observation',
-                       'Ethnic group (20 categories) Code': 'ethnicity_code'}
-
-        self.csv_df.rename(columns=rename_dict,
-                           inplace=True)
-
-        self.csv_df['sex'] = self.csv_df['sex'].apply(str.lower)
+      
+        self.csv_df = csv_to_clean_df('data/basic_demography_ltla_level.csv')
 
         ethnicity_lables_translation = {
             'Does not apply': 'Does not apply',
@@ -47,6 +35,9 @@ class BasicDemography:
         }
         self.csv_df.replace(
             {"ethnicity": ethnicity_lables_translation}, inplace=True)
+        
+        self.csv_df['ethnicity_code_simplified'] = self.csv_df['ethnicity'].apply(ethnicity_code_simplified)
+
 
     def get_region_averages(self, region):
         region_df = self.csv_df[self.csv_df['ltla_code'] == region]
@@ -73,7 +64,7 @@ class BasicDemography:
 
         query = "age_category == '" + row['age_category'] + \
             "' & ethnicity_code == " + str(row['ethnicity_code']) + \
-            " & sex == '" + row['sex'] + \
+            " & gender == '" + row['gender'] + \
             "' & ltla_code == '" + row['ltla_code'] + "'"
 
         demographic_df = region_df.query(query)
@@ -86,9 +77,9 @@ class BasicDemography:
     def sample(self, sample_size, region):
 
         if (region == 'none'):
-            region_df = self.csv_df
+            region_df = self.csv_df.copy()
         else:
-            region_df = self.csv_df[self.csv_df['ltla_code'] == region]
+            region_df = self.csv_df.loc[self.csv_df['ltla_code'] == region, :].copy()
 
         def age_category_to_age(age_category):
             if (age_category == 'Aged 4 years and under'):

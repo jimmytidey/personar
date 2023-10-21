@@ -3,12 +3,17 @@ from flask_cors import CORS, cross_origin
 
 from basic_demography import BasicDemography
 from employment import Employment
+from occupation import Occupation 
+from disability import Disability 
 from headshots import add_headshots
 from helpers import df_to_response 
 
 app = Flask(__name__)
 basic_demographics = BasicDemography()
 employment = Employment()
+occupation = Occupation()
+disability = Disability()
+
 CORS(app,resources={r"/sample/": {"origins": "*"}})
 
 @app.route('/data/sample/', methods=['GET'])
@@ -17,6 +22,8 @@ def sample():
     sample_df = basic_demographics.sample(10, region)
     sample_df = add_headshots(sample_df)
     sample_df = employment.add_employment(sample_df)
+    sample_df = occupation.add_occupation(sample_df)
+    sample_df = disability.add_disability_status(sample_df)
     response = df_to_response(sample_df, app)
     return response
 
